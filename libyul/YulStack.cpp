@@ -292,6 +292,7 @@ YulStack::assembleWithDeployed(std::optional<std::string_view> _deployName)
 					{{m_charStream->name(), 0}}
 					)
 			);
+			deployedObject.ethdebug["not yet implemented @ MachineAssemblyObject::ethdebug"] = true;
 		}
 	}
 	catch (UnimplementedFeatureError const& _error)

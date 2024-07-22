@@ -1275,6 +1275,10 @@ Json StandardCompiler::importEVMAssembly(StandardCompiler::InputsAndSettings _in
 	{
 		return formatFatalError(Error::Type::Exception, "Assembly import error: " + std::string(e.what()));
 	}
+	catch (evmasm::InvalidOpcode const& e)
+	{
+		return formatFatalError(Error::Type::Exception, "Assembly import error: " + std::string(e.what()));
+	}
 	catch (...)
 	{
 		return formatError(
@@ -1774,6 +1778,9 @@ Json StandardCompiler::compileYul(InputsAndSettings _inputsAndSettings)
 		output["contracts"][sourceName][contractName]["evm"]["assembly"] = object.assembly->assemblyString(stack.debugInfoSelection());
 	if (isArtifactRequested(_inputsAndSettings.outputSelection, sourceName, contractName, "yulCFGJson", wildcardMatchesExperimental))
 		output["contracts"][sourceName][contractName]["yulCFGJson"] = stack.cfgJson();
+
+	if (isEthdebugRequested(_inputsAndSettings.outputSelection))
+		output["ethdebug"] = {};
 
 	return output;
 }
