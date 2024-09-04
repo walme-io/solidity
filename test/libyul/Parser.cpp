@@ -1058,7 +1058,8 @@ BOOST_AUTO_TEST_CASE(ethdebug_debug_attributes_empty)
 	auto const sourceText = R"(
 		{}
 	)";
-	EVMDialectTyped const& dialect = EVMDialectTyped::instance(EVMVersion{});
+	auto const& dialect = EVMDialect::strictAssemblyForEVM(EVMVersion{}, std::nullopt);
+	BOOST_REQUIRE(cache->cache().size() == 0);
 	std::shared_ptr<AST> result = parse(sourceText, dialect, reporter, cache);
 	BOOST_REQUIRE(cache->cache().size() == 0);
 }
@@ -1072,7 +1073,7 @@ BOOST_AUTO_TEST_CASE(ethdebug_debug_attributes_set_empty)
 		/// @debug.set {}
 		{}
 	)";
-	EVMDialectTyped const& dialect = EVMDialectTyped::instance(EVMVersion{});
+	auto const& dialect = EVMDialect::strictAssemblyForEVM(EVMVersion{}, std::nullopt);
 	std::shared_ptr<AST> result = parse(sourceText, dialect, reporter, cache);
 	BOOST_REQUIRE(cache->cache().size() == 1);
 }
@@ -1087,7 +1088,7 @@ BOOST_AUTO_TEST_CASE(ethdebug_debug_attributes_set)
 		/// @debug.set {"hello": "world"}
 		{}
 	)";
-	EVMDialectTyped const& dialect = EVMDialectTyped::instance(EVMVersion{});
+	auto const& dialect = EVMDialect::strictAssemblyForEVM(EVMVersion{}, std::nullopt);
 	std::shared_ptr<AST> result = parse(sourceText, dialect, reporter, cache);
 	BOOST_REQUIRE(cache->cache().size() == 1);
 }
@@ -1106,7 +1107,7 @@ BOOST_AUTO_TEST_CASE(ethdebug_debug_attributes_multiple_set)
 			{}
 		}
 	)";
-	EVMDialectTyped const& dialect = EVMDialectTyped::instance(EVMVersion{});
+	auto const& dialect = EVMDialect::strictAssemblyForEVM(EVMVersion{}, std::nullopt);
 	std::shared_ptr<AST> result = parse(sourceText, dialect, reporter, cache);
 	BOOST_REQUIRE(cache->cache().size() == 2);
 }
