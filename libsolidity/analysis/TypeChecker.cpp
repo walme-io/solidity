@@ -22,6 +22,7 @@
  */
 
 #include <libsolidity/analysis/TypeChecker.h>
+#include <libsolidity/analysis/ConstantEvaluator.h>
 #include <libsolidity/ast/AST.h>
 #include <libsolidity/ast/ASTUtils.h>
 #include <libsolidity/ast/UserDefinableOperators.h>
@@ -229,6 +230,63 @@ TypePointers TypeChecker::typeCheckMetaTypeFunctionAndRetrieveReturnType(Functio
 bool TypeChecker::visit(ImportDirective const&)
 {
 	return false;
+}
+
+void TypeChecker::endVisit(ContractDefinition const& _contract)
+{
+	if (ASTPointer<Expression> const baseLocation = _contract.storageBaseLocationExpression())
+	{
+		if (!*baseLocation->annotation().isPure)
+		{
+			// TODO: handle erc7201 as a builtin function ?
+			if (auto functionCall = dynamic_cast<FunctionCall const*>(baseLocation.get()))
+				if (
+					auto const* identifier = dynamic_cast<Identifier const*>(&functionCall->expression());
+					identifier && identifier->name() == "erc7201"
+				)
+					return;
+
+			m_errorReporter.typeError(
+				77_error,
+				baseLocation->location(),
+				"The contract base location must be an expression that can be evaluated at compilation time."
+			);
+		}
+
+		auto const* expressionType = type(*baseLocation);
+		BoolResult result = expressionType->isImplicitlyConvertibleTo(*TypeProvider::uint256());
+		if (!result)
+		{
+			std::string errorMessage = "Contract storage base location ";
+			if (
+				auto const* rationalType = dynamic_cast<RationalNumberType const*>(expressionType);
+				rationalType && rationalType->isFractional()
+			)
+				errorMessage += "cannot be specified by a fractional number.";
+			else
+				errorMessage += "must be in range of type uint256. Current type is " + expressionType->humanReadableName();
+
+			m_errorReporter.typeErrorConcatenateDescriptions(
+				76_error,
+				baseLocation->location(),
+				errorMessage,
+				result.message()
+			);
+			return;
+		}
+
+		if (auto const* rationalType = dynamic_cast<RationalNumberType const*>(expressionType))
+		{
+			solAssert(!rationalType->isFractional());
+			// store value ?
+		}
+		else
+			m_errorReporter.typeError(
+				42_error,
+				baseLocation->location(),
+				"Only number literals are accepted in the expression specifying the contract base storage location."
+			);
+	}
 }
 
 void TypeChecker::endVisit(InheritanceSpecifier const& _inheritance)
