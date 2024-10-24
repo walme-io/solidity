@@ -35,19 +35,12 @@ private:
     	ControlFlow const& controlFlow;
     	SSACFG const& cfg;
     };
-	explicit SSACFGValidator(Context const& _context): m_context(_context), m_valueIdToVariable(_context.cfg.numValueIds())
+	explicit SSACFGValidator(Context const& _context):
+		m_context(_context),
+		m_valueIdToVariable(_context.cfg.numValueIds())
 	{}
 	std::optional<std::vector<std::set<SSACFG::ValueId>>> consumeExpression(Expression const& _expression);
-	std::optional<std::set<SSACFG::ValueId>> consumeUnaryExpression(Expression const& _expression)
-	{
-		if (auto result = consumeExpression(_expression))
-		{
-			yulAssert(result->size() == 1);
-			return result->front();
-		}
-		else
-			return std::nullopt;
-	}
+	std::optional<std::set<SSACFG::ValueId>> consumeUnaryExpression(Expression const& _expression);
 	bool consumeBlock(Block const& _block);
 	bool consumeStatement(Statement const& _statement);
 	bool consumeConstantForLoop(ForLoop const& _loop, bool _conditionIsZero);

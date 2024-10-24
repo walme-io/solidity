@@ -18,6 +18,8 @@
 
 #include <libyul/backends/evm/SSACFGValidator.h>
 
+#include <libyul/Utilities.h>
+
 #include <libsolutil/Visitor.h>
 
 #include <range/v3/algorithm/all_of.hpp>
@@ -473,6 +475,16 @@ bool SSACFGValidator::consumeDynamicForLoop(ForLoop const& _loop)
 	return false;
 }
 
+std::optional<std::set<SSACFG::ValueId>> SSACFGValidator::consumeUnaryExpression(Expression const& _expression)
+{
+	if (auto result = consumeExpression(_expression))
+	{
+		yulAssert(result->size() == 1, fmt::format("Expected exactly one result value but got {}", result->size()));
+		return result->front();
+	}
+	return std::nullopt;
+}
+
 std::optional<std::vector<std::set<SSACFG::ValueId>>> SSACFGValidator::consumeExpression(Expression const& _expression)
 {
 	return std::visit(util::GenericVisitor{
@@ -627,8 +639,15 @@ std::set<SSACFG::ValueId> const& SSACFGValidator::lookupIdentifier(Identifier co
 
 SSACFG::ValueId SSACFGValidator::lookupLiteral(Literal const& _literal) const
 {
-	auto valueId = m_context.cfg.lookupLiteral(_literal.value);
-	yulAssert(valueId.hasValue());
+	auto const valueId = m_context.cfg.lookupLiteral(_literal.value);
+	yulAssert(
+		valueId.hasValue(),
+		fmt::format(
+			"Block {}: Literal with value \"{}\" has no value associated to it in the CFG.",
+			m_currentBlock.value,
+			formatLiteral(_literal)
+		)
+	);
 	return valueId;
 }
 
