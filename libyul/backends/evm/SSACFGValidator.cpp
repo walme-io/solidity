@@ -567,7 +567,7 @@ SSACFG::BasicBlock::Jump const& SSACFGValidator::expectUnconditionalJump() const
 
 SSACFG::BasicBlock::FunctionReturn const& SSACFGValidator::expectFunctionReturn()
 {
-	yulAssert(m_currentOperation == currentBlock().operations.size());
+	yulAssert(m_currentOperation == currentBlock().operations.size(), fmt::format("{}: Expecting function return in block {} after last operation. Current operation = {}, num operations = {}.", m_context.cfg.function->name.str(), m_currentBlock.value, m_currentOperation, currentBlock().operations.size()));
 	auto const* functionReturn = std::get_if<SSACFG::BasicBlock::FunctionReturn>(&currentBlock().exit);
 	yulAssert(functionReturn);
 	for (auto&& [variable, value]: ranges::zip_view(m_context.cfg.returns, functionReturn->returnValues))
