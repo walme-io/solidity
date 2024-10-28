@@ -98,8 +98,6 @@ bool SSACFGValidator::consumeBlock(Block const& _block)
 	for (auto const& stmt: _block.statements)
 		if (!std::holds_alternative<FunctionDefinition>(stmt) && !consumeStatement(stmt))
 			return false;
-	if (std::holds_alternative<SSACFG::BasicBlock::FunctionReturn>(currentBlock().exit))
-		expectFunctionReturn();
 	return true;
 }
 
@@ -194,7 +192,8 @@ bool SSACFGValidator::consumeStatement(Statement const& _statement)
 					yulAssert(functionGraph->zeroLiteral());
 					nestedValidator.m_currentVariableValues[&returnVar.get()] = std::set{*functionGraph->zeroLiteral()};
 				}
-				nestedValidator.consumeBlock(_function.body);
+				if (nestedValidator.consumeBlock(_function.body))
+					nestedValidator.consumeStatement(Leave{});
 				for (auto const& returnVar: functionGraph->returns)
 				{
 					auto const& returnValues = nestedValidator.m_currentVariableValues.at(&returnVar.get());
