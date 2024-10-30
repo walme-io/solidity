@@ -114,15 +114,15 @@ private:
 				else
 					m_varToValueIds[var] = _values;
 			}
-			for (auto const& valueId: _values)
+			/*for (auto const& valueId: _values)
 			{
 				yulAssert(valueId.hasValue());
 				if (append)
 					m_valueIdToVars[valueId.value] += _var;
 				else
 					m_valueIdToVars[valueId.value] = _var;
-			}
-			/*for (auto const& valueId: _values)
+			}*/
+			for (auto const& valueId: _values)
 			{
 				yulAssert(valueId.hasValue());
 				auto& assignedVars = m_valueIdToVars[valueId.value];
@@ -137,7 +137,7 @@ private:
 					else
 						++i;
 				assignedVars += _var;
-			}*/
+			}
 		}
 
 		VarToValueIds m_varToValueIds{};
