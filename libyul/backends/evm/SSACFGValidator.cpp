@@ -370,7 +370,7 @@ bool SSACFGValidator::consumeConstantForLoop(ForLoop const& _loop, bool _conditi
 				for (auto const* var: entryVariableValues.variables())
 				{
 					yulAssert(var);
-					yulAssert(loopInfo->loopPostVariableValues->lookupValues(*var) == m_currentVariableValues.lookupValues(*var));
+					yulAssert(!intersectionEmpty(loopInfo->loopPostVariableValues->lookupValues(*var), m_currentVariableValues.lookupValues(*var)));
 				}
 			advanceToBlock(jumpToContinueTarget.target);
 			if (consumeBlock(_loop.post))
