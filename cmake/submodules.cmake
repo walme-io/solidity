@@ -10,14 +10,25 @@ macro(initialize_submodule SUBMODULE_PATH)
 			if(NOT Git_FOUND)
 				message(FATAL_ERROR "Failed to initialize submodules: 'git' command not found.")
 			endif()
+			# Temporarily add the submodule path to safe.directory
 			execute_process(
-					COMMAND git submodule update --init ${CMAKE_SOURCE_DIR}/deps/${SUBMODULE_PATH}
-					WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-					RESULT_VARIABLE result
+				COMMAND git config --global --add safe.directory ${CMAKE_SOURCE_DIR}/deps/${SUBMODULE_PATH}
+				WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+			)
+			execute_process(
+				COMMAND git submodule update --init ${CMAKE_SOURCE_DIR}/deps/${SUBMODULE_PATH}
+				WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+				RESULT_VARIABLE result
 			)
 			if(NOT result EQUAL 0)
 				message(FATAL_ERROR "Failed to initialize submodules: 'git submodule update --init' failed.")
 			endif()
+			# Clean up the safe.directory entry after initialization
+			execute_process(
+				COMMAND git config --global --unset safe.directory ${CMAKE_SOURCE_DIR}/deps/${SUBMODULE_PATH}
+				WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+				ERROR_QUIET
+			)
 		endif()
 	endif()
 endmacro()
