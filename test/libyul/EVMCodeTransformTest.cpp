@@ -75,6 +75,7 @@ TestCase::TestResult EVMCodeTransformTest::run(std::ostream& _stream, std::strin
 		EVMDialect::strictAssemblyForEVMObjects(solidity::test::CommonOptions::get().evmVersion(),
 			solidity::test::CommonOptions::get().eofVersion()),
 		m_stackOpt,
+		true, // todo
 		std::nullopt
 	);
 

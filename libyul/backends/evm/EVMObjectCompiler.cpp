@@ -39,14 +39,15 @@ void EVMObjectCompiler::compile(
 	AbstractAssembly& _assembly,
 	EVMDialect const& _dialect,
 	bool _optimize,
+	bool _ssaCfgCodegen,
 	std::optional<uint8_t> _eofVersion
 )
 {
 	EVMObjectCompiler compiler(_assembly, _dialect, _eofVersion);
-	compiler.run(_object, _optimize);
+	compiler.run(_object, _optimize, _ssaCfgCodegen);
 }
 
-void EVMObjectCompiler::run(Object const& _object, bool _optimize)
+void EVMObjectCompiler::run(Object const& _object, bool _optimize, bool const _ssaCfgCodegen)
 {
 	BuiltinContext context;
 	context.currentObject = &_object;
@@ -59,7 +60,7 @@ void EVMObjectCompiler::run(Object const& _object, bool _optimize)
 			auto subAssemblyAndID = m_assembly.createSubAssembly(isCreation, subObject->name);
 			context.subIDs[subObject->name] = subAssemblyAndID.second;
 			subObject->subId = subAssemblyAndID.second;
-			compile(*subObject, *subAssemblyAndID.first, m_dialect, _optimize, m_eofVersion);
+			compile(*subObject, *subAssemblyAndID.first, m_dialect, _optimize, _ssaCfgCodegen, m_eofVersion);
 		}
 		else
 		{
@@ -80,14 +81,18 @@ void EVMObjectCompiler::run(Object const& _object, bool _optimize)
 		);
 	if (_optimize && m_dialect.evmVersion().canOverchargeGasForCall())
 	{
-		auto stackErrors = OptimizedEVMCodeTransform::run(
-			m_assembly,
-			*_object.analysisInfo,
-			_object.code()->root(),
-			m_dialect,
-			context,
-			OptimizedEVMCodeTransform::UseNamedLabels::ForFirstFunctionOfEachName
-		);
+		std::vector<StackTooDeepError> stackErrors;
+		if (!_ssaCfgCodegen)
+			stackErrors = OptimizedEVMCodeTransform::run(
+				m_assembly,
+				*_object.analysisInfo,
+				_object.code()->root(),
+				m_dialect,
+				context,
+				OptimizedEVMCodeTransform::UseNamedLabels::ForFirstFunctionOfEachName
+			);
+		else
+			std::cout << "SSA CFG Codegen" << std::endl;
 		if (!stackErrors.empty())
 		{
 			std::vector<FunctionCall const*> memoryGuardCalls = findFunctionCalls(

@@ -190,7 +190,7 @@ bool YulStack::analyzeParsed(Object& _object)
 	return success;
 }
 
-void YulStack::compileEVM(AbstractAssembly& _assembly, bool _optimize) const
+void YulStack::compileEVM(AbstractAssembly& _assembly, bool const _optimize, bool const _ssaCfgCodegen) const
 {
 	EVMDialect const* dialect = nullptr;
 	switch (m_language)
@@ -204,7 +204,7 @@ void YulStack::compileEVM(AbstractAssembly& _assembly, bool _optimize) const
 			break;
 	}
 
-	EVMObjectCompiler::compile(*m_parserResult, _assembly, *dialect, _optimize, m_eofVersion);
+	EVMObjectCompiler::compile(*m_parserResult, _assembly, *dialect, _optimize, _ssaCfgCodegen, m_eofVersion);
 }
 
 void YulStack::reparse()
@@ -321,7 +321,8 @@ YulStack::assembleEVMWithDeployed(std::optional<std::string_view> _deployName)
 	);
 	try
 	{
-		compileEVM(adapter, optimize);
+		yulAssert(!m_optimiserSettings.runSSAYul || !m_optimiserSettings.runPeephole, "Peephole should not be run with SSA Yul");
+		compileEVM(adapter, optimize, m_optimiserSettings.runSSAYul);
 
 		assembly.optimise(evmasm::Assembly::OptimiserSettings::translateSettings(m_optimiserSettings, m_evmVersion));
 
