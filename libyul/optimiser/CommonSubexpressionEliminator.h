@@ -62,7 +62,6 @@ protected:
 
 	void assignValue(YulName _variable, Expression const* _value) override;
 private:
-	std::set<YulName> m_returnVariables;
 	std::unordered_map<
 		std::reference_wrapper<Expression const>,
 		std::set<YulName>,

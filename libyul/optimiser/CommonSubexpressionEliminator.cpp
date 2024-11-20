@@ -54,12 +54,7 @@ CommonSubexpressionEliminator::CommonSubexpressionEliminator(
 
 void CommonSubexpressionEliminator::operator()(FunctionDefinition& _fun)
 {
-	ScopedSaveAndRestore returnVariables(m_returnVariables, {});
 	ScopedSaveAndRestore replacementCandidates(m_replacementCandidates, {});
-
-	for (auto const& v: _fun.returnVariables)
-		m_returnVariables.insert(v.name);
-
 	DataFlowAnalyzer::operator()(_fun);
 }
 
@@ -105,19 +100,13 @@ void CommonSubexpressionEliminator::visit(Expression& _e)
 					_e = Identifier{debugDataOf(_e), value->name};
 		}
 	}
+	else if (std::holds_alternative<Literal>(_e))
+		return;
 	else if (auto const* candidates = util::valueOrNullptr(m_replacementCandidates, _e))
 		for (auto const& variable: *candidates)
 			if (AssignedValue const* value = variableValue(variable))
 			{
 				assertThrow(value->value, OptimizerException, "");
-				// Prevent using the default value of return variables
-				// instead of literal zeros.
-				if (
-					m_returnVariables.count(variable) &&
-					std::holds_alternative<Literal>(*value->value) &&
-					std::get<Literal>(*value->value).value.value() == 0
-				)
-					continue;
 				// We check for syntactic equality again because the value might have changed.
 				if (inScope(variable) && SyntacticallyEqual{}(_e, *value->value))
 				{
@@ -129,7 +118,7 @@ void CommonSubexpressionEliminator::visit(Expression& _e)
 
 void CommonSubexpressionEliminator::assignValue(YulName _variable, Expression const* _value)
 {
-	if (_value)
+	if (_value && std::holds_alternative<FunctionCall>(*_value))
 		m_replacementCandidates[*_value].insert(_variable);
 	DataFlowAnalyzer::assignValue(_variable, _value);
 }
