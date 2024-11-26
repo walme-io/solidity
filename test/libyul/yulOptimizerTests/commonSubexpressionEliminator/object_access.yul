@@ -23,7 +23,7 @@ object "main" {
 //         let a := datasize("abc")
 //         let x := dataoffset("abc")
 //         let y := a
-//         datacopy(r, x, a)
+//         datacopy("abc", x, a)
 //         mstore(a, x)
 //     }
 //     data "abc" hex"48656c6c6f2c20576f726c6421"

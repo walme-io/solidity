@@ -24,11 +24,10 @@
 //         let _3 := 7
 //         sstore(a, _3)
 //         x := 9
-//         let _4 := 11
-//         mstore(_3, _4)
+//         mstore(_3, 11)
 //         a := 33
-//         mstore(sload(a), _4)
+//         mstore(sload(a), 11)
 //         a := 39
-//         mstore(sload(a), _4)
+//         mstore(sload(a), 11)
 //     }
 // }

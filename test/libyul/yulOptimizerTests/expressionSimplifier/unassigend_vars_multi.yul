@@ -7,9 +7,4 @@
 // ----
 // step: expressionSimplifier
 //
-// {
-//     {
-//         let c, d
-//         sstore(d, 7)
-//     }
-// }
+// { { sstore(0, 7) } }

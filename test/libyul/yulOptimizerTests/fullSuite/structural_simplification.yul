@@ -11,8 +11,6 @@
 // {
 //     {
 //         mstore(0x40, 0x20)
-//         for { } iszero(1) { }
-//         { }
 //         sstore(1, mload(0x40))
 //     }
 // }

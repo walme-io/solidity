@@ -12,13 +12,12 @@
 //
 // {
 //     {
-//         let _1 := 2
-//         let b := mload(_1)
+//         let b := mload(2)
 //         if calldataload(1)
 //         {
-//             mstore(_1, 7)
-//             mstore(_1, b)
+//             mstore(2, 7)
+//             mstore(2, b)
 //         }
-//         sstore(0, b)
+//         sstore(0, mload(2))
 //     }
 // }

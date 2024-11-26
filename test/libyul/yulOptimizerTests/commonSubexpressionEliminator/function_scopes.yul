@@ -41,8 +41,8 @@
 //         let _1 := 0x40
 //         p := mload(_1)
 //         let _2 := add(p, size)
-//         let _3 := _1
-//         mstore(_1, _2)
+//         let _3 := 0x40
+//         mstore(_3, _2)
 //     }
 //     function array_index_access(array, index) -> p_1
 //     {

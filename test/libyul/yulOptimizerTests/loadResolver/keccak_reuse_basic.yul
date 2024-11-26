@@ -11,9 +11,8 @@
 //
 // {
 //     {
-//         let _1 := 0
-//         let a := keccak256(_1, calldataload(_1))
-//         sstore(a, 2)
-//         sstore(a, 3)
+//         let x := calldataload(0)
+//         sstore(keccak256(0, x), 2)
+//         sstore(keccak256(0, x), 3)
 //     }
 // }

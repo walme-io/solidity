@@ -1098,8 +1098,8 @@
 //         if iszero(slt(add(_1, 0x1f), dataEnd)) { revert(0, 0) }
 //         let length := calldataload(_1)
 //         if gt(length, 0xffffffffffffffff) { revert(0, 0) }
-//         if gt(add(add(_1, length), 32), dataEnd) { revert(0, 0) }
-//         value2 := add(_1, 32)
+//         if gt(add(add(_1, length), 0x20), dataEnd) { revert(0, 0) }
+//         value2 := add(_1, 0x20)
 //         value3 := length
 //         value4 := cleanup_revert_enum_Operation(calldataload(add(headStart, 96)))
 //     }

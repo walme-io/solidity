@@ -14,8 +14,8 @@
 //
 // {
 //     let a
-//     let b := a
-//     sstore(a, a)
+//     let b := 0
+//     sstore(a, b)
 //     function f() -> x
 //     {
 //         let y := 0

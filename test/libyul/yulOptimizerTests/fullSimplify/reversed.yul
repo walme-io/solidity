@@ -5,9 +5,4 @@
 // ----
 // step: fullSimplify
 //
-// {
-//     {
-//         let _1 := 0
-//         mstore(_1, mload(_1))
-//     }
-// }
+// { { mstore(0, mload(0)) } }

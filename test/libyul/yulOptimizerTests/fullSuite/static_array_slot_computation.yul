@@ -38,7 +38,8 @@
 //                 mstore(4, 0x32)
 //                 revert(0, 0x24)
 //             }
-//             sstore(0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e56d, 0x05)
+//             mstore(0, 0)
+//             sstore(add(keccak256(0, 0x20), 0x0a), 0x05)
 //         }
 //     }
 // }

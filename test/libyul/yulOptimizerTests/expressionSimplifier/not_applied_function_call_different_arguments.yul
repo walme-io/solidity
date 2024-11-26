@@ -7,11 +7,7 @@
 // step: expressionSimplifier
 //
 // {
-//     {
-//         let _2 := f(1)
-//         let _3 := 0
-//         sstore(_3, sub(f(_3), _2))
-//     }
+//     { sstore(0, sub(f(0), f(1))) }
 //     function f(a) -> b
 //     { }
 // }

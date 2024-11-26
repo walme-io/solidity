@@ -466,7 +466,7 @@
 //         let _1 := mload(0)
 //         let pos := 0x20
 //         let length := mload(_1)
-//         mstore(pos, length)
+//         mstore(0x20, length)
 //         pos := 64
 //         let srcPtr := add(_1, 0x20)
 //         let i := 0
@@ -485,7 +485,7 @@
 //             srcPtr := add(srcPtr, 0x20)
 //             pos := add(pos, 0x60)
 //         }
-//         let a, b, c, d := abi_decode_uint256t_uint256t_array_uint256_dynt_array_array_uint256_memory_dyn(mload(0x20), mload(64))
+//         let a, b, c, d := abi_decode_uint256t_uint256t_array_uint256_dynt_array_array_uint256_memory_dyn(mload(0x20), mload(0x40))
 //         sstore(a, b)
 //         sstore(c, d)
 //         sstore(0, pos)
@@ -504,7 +504,7 @@
 //         for { } lt(i, length) { i := add(i, 1) }
 //         {
 //             if iszero(slt(add(src, 0x1f), end)) { revert(0, 0) }
-//             let dst_1 := allocateMemory_823()
+//             let dst_1 := allocateMemory_821()
 //             let array_1 := dst_1
 //             let src_1 := src
 //             let _1 := add(src, 64)
@@ -534,22 +534,22 @@
 //         let dst := allocateMemory(array_allocation_size_array_address_dyn_memory(length))
 //         let array := dst
 //         mstore(dst, length)
-//         dst := add(dst, 32)
-//         let src := add(_1, 32)
-//         if gt(add(add(_1, shl(5, length)), 32), dataEnd) { revert(0, 0) }
+//         dst := add(dst, 0x20)
+//         let src := add(_1, 0x20)
+//         if gt(add(add(_1, shl(5, length)), 0x20), dataEnd) { revert(0, 0) }
 //         let i := 0
 //         for { } lt(i, length) { i := add(i, 1) }
 //         {
 //             mstore(dst, calldataload(src))
-//             dst := add(dst, 32)
-//             src := add(src, 32)
+//             dst := add(dst, 0x20)
+//             src := add(src, 0x20)
 //         }
 //         value2 := array
 //         let offset_1 := calldataload(add(headStart, 96))
 //         if gt(offset_1, 0xffffffffffffffff) { revert(0, 0) }
 //         value3 := abi_decode_array_array_uint256_memory_dyn(add(headStart, offset_1), dataEnd)
 //     }
-//     function allocateMemory_823() -> memPtr
+//     function allocateMemory_821() -> memPtr
 //     {
 //         memPtr := mload(64)
 //         let newFreePtr := add(memPtr, 64)

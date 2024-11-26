@@ -14,12 +14,10 @@
 //
 // {
 //     {
-//         let _1 := 0
-//         let t := calldataload(_1)
-//         sstore(_1, iszero(t))
+//         let t := calldataload(0)
+//         sstore(0, iszero(t))
 //         sstore(1, 1)
-//         let _8 := 2
-//         sstore(_8, shl(t, 1))
+//         sstore(2, shl(t, 1))
 //         sstore(3, exp(8, t))
 //         sstore(4, sub(iszero(and(t, 1)), and(t, 1)))
 //     }

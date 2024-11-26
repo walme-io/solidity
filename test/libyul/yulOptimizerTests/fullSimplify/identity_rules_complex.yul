@@ -5,4 +5,8 @@
 // ----
 // step: fullSimplify
 //
-// { { mstore(0, 0) } }
+// {
+//     {
+//         mstore(sub(calldataload(0), calldataload(0)), 0)
+//     }
+// }

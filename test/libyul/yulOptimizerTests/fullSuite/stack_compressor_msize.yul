@@ -48,6 +48,7 @@
 //         pop(keccak256(gcd(10, 15), or(gt(not(gcd(10, 15)), 1), 1)))
 //         mstore(lt(or(gt(1, or(or(gt(or(or(or(gt(or(gt(not(0), _5), 1), _4), _3), _2), 1), 1), _1), 1)), 1), 1), 1)
 //         sstore(not(gcd(10, 15)), 1)
+//         sstore(0, 0)
 //         sstore(2, 1)
 //         foo_singlereturn()
 //         sstore(0, 0)

@@ -28,13 +28,12 @@
 //         let y := calldataload(1)
 //         let a := keccak256(x, y)
 //         sstore(a, 2)
-//         let _4 := 10
-//         a := calldataload(_4)
+//         a := calldataload(10)
 //         sstore(keccak256(x, y), 3)
-//         x := _4
-//         sstore(keccak256(_4, y), 4)
+//         x := 10
+//         sstore(keccak256(x, y), 4)
 //         y := 9
-//         let d := keccak256(_4, y)
+//         let d := keccak256(x, y)
 //         sstore(d, 5)
 //         sstore(d, 6)
 //     }

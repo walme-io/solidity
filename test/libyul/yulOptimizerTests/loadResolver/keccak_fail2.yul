@@ -10,9 +10,8 @@
 //
 // {
 //     {
-//         let _1 := 10
-//         mstore(100, _1)
+//         mstore(100, 10)
 //         mstore(132, 5)
-//         sstore(0, keccak256(_1, 33))
+//         sstore(0, keccak256(10, 33))
 //     }
 // }

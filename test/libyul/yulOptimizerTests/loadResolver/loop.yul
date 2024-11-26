@@ -9,12 +9,10 @@
 //
 // {
 //     {
-//         let _1 := 123213
-//         let _2 := 0
-//         sstore(_2, _1)
-//         let x := _2
+//         sstore(0, 123213)
+//         let x := 0
 //         let y
-//         for { } lt(x, _1) { x := add(x, 1) }
+//         for { } lt(x, sload(0)) { x := add(x, 1) }
 //         { y := add(x, y) }
 //     }
 // }
