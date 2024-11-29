@@ -62,6 +62,7 @@ bool YulStack::parse(std::string const& _sourceName, std::string const& _source)
 	catch (UnimplementedFeatureError const& _error)
 	{
 		reportUnimplementedFeatureError(_error);
+		return false;
 	}
 
 	if (!m_errorReporter.hasErrors())
@@ -296,6 +297,7 @@ YulStack::assembleWithDeployed(std::optional<std::string_view> _deployName)
 	catch (UnimplementedFeatureError const& _error)
 	{
 		reportUnimplementedFeatureError(_error);
+		return {MachineAssemblyObject{}, MachineAssemblyObject{}};
 	}
 
 	return {std::move(creationObject), std::move(deployedObject)};
@@ -352,9 +354,10 @@ YulStack::assembleEVMWithDeployed(std::optional<std::string_view> _deployName)
 	catch (UnimplementedFeatureError const& _error)
 	{
 		reportUnimplementedFeatureError(_error);
+		return {nullptr, nullptr};
 	}
 
-	return {std::make_shared<evmasm::Assembly>(assembly), {}};
+	return {std::make_shared<evmasm::Assembly>(assembly), nullptr};
 }
 
 std::string YulStack::print() const
