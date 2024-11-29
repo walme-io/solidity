@@ -25,6 +25,8 @@
 #include <liblangutil/DebugInfoSelection.h>
 #include <liblangutil/ErrorReporter.h>
 #include <liblangutil/EVMVersion.h>
+#include <liblangutil/Exceptions.h>
+
 #include <libsolutil/JSON.h>
 
 #include <libyul/Object.h>
@@ -165,6 +167,7 @@ private:
 	void reparse();
 
 	void reportUnimplementedFeatureError(langutil::UnimplementedFeatureError const& _error);
+	void reportCodeGenerationError(langutil::Error const& _error);
 
 	Language m_language = Language::Assembly;
 	langutil::EVMVersion m_evmVersion;

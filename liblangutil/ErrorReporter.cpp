@@ -273,6 +273,16 @@ void ErrorReporter::unimplementedFeatureError(ErrorId _error, SourceLocation con
 	);
 }
 
+void ErrorReporter::codeGenerationError(ErrorId _error, std::string const& _description)
+{
+	error(_error, Error::Type::CodeGenerationError, SourceLocation(), _description);
+}
+
+void ErrorReporter::codeGenerationError(ErrorId _error, SourceLocation const& _location, std::string const& _description)
+{
+	error(_error, Error::Type::CodeGenerationError, _location, _description);
+}
+
 void ErrorReporter::info(
 	ErrorId _error,
 	SourceLocation const& _location,

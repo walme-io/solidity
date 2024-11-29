@@ -294,6 +294,11 @@ YulStack::assembleWithDeployed(std::optional<std::string_view> _deployName)
 			);
 		}
 	}
+	catch (Error const& _error)
+	{
+		reportCodeGenerationError(_error);
+		return {MachineAssemblyObject{}, MachineAssemblyObject{}};
+	}
 	catch (UnimplementedFeatureError const& _error)
 	{
 		reportUnimplementedFeatureError(_error);
@@ -350,6 +355,11 @@ YulStack::assembleEVMWithDeployed(std::optional<std::string_view> _deployName)
 			evmasm::Assembly& runtimeAssembly = assembly.sub(*subIndex);
 			return {std::make_shared<evmasm::Assembly>(assembly), std::make_shared<evmasm::Assembly>(runtimeAssembly)};
 		}
+	}
+	catch (Error const& _error)
+	{
+		reportCodeGenerationError(_error);
+		return {nullptr, nullptr};
 	}
 	catch (UnimplementedFeatureError const& _error)
 	{
@@ -430,4 +440,16 @@ void YulStack::reportUnimplementedFeatureError(UnimplementedFeatureError const& 
 {
 	solAssert(_error.comment(), "Unimplemented feature errors must include a message for the user");
 	m_errorReporter.unimplementedFeatureError(1920_error, _error.sourceLocation(), *_error.comment());
+}
+
+void YulStack::reportCodeGenerationError(Error const& _error)
+{
+	// CodeGenerationErrors can be reported after analysis.
+	// No error reporter available then so they're thrown instead.
+	solAssert(_error.type() == Error::Type::CodeGenerationError);
+	solAssert(!_error.secondarySourceLocation());
+	if (!_error.sourceLocation())
+		m_errorReporter.codeGenerationError(_error.errorId(), _error.what());
+	else
+		m_errorReporter.codeGenerationError(_error.errorId(), *_error.sourceLocation(), _error.what());
 }

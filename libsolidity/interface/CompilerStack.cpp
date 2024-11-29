@@ -779,11 +779,7 @@ bool CompilerStack::compile(State _stopAfter)
 					}
 					catch (Error const& _error)
 					{
-						// Since codegen has no access to the error reporter, the only way for it to
-						// report an error is to throw. In most cases it uses dedicated exceptions,
-						// but CodeGenerationError is one case where someone decided to just throw Error.
-						solAssert(_error.type() == Error::Type::CodeGenerationError);
-						m_errorReporter.error(_error.errorId(), _error.type(), SourceLocation(), _error.what());
+						reportCodeGenerationError(_error);
 						return false;
 					}
 					catch (UnimplementedFeatureError const& _error)
@@ -2007,4 +2003,16 @@ void CompilerStack::reportUnimplementedFeatureError(UnimplementedFeatureError co
 {
 	solAssert(_error.comment(), "Unimplemented feature errors must include a message for the user");
 	m_errorReporter.unimplementedFeatureError(1834_error, _error.sourceLocation(), *_error.comment());
+}
+
+void CompilerStack::reportCodeGenerationError(Error const& _error)
+{
+	// CodeGenerationErrors can be reported after analysis.
+	// No error reporter available then so they're thrown instead.
+	solAssert(_error.type() == Error::Type::CodeGenerationError);
+	solAssert(!_error.secondarySourceLocation());
+	if (!_error.sourceLocation())
+		m_errorReporter.codeGenerationError(_error.errorId(), _error.what());
+	else
+		m_errorReporter.codeGenerationError(_error.errorId(), *_error.sourceLocation(), _error.what());
 }
