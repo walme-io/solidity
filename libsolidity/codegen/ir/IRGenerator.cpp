@@ -986,6 +986,7 @@ std::string IRGenerator::deployCode(ContractDefinition const& _contract)
 	t("allocateUnbounded", m_utils.allocateUnboundedFunction());
 	t("codeOffset", m_context.newYulVariable());
 	t("object", IRNames::deployedObject(_contract));
+	t("library", _contract.isLibrary());
 
 	std::vector<std::map<std::string, std::string>> immutables;
 	if (_contract.isLibrary())
