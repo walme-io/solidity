@@ -247,7 +247,7 @@ void TypeChecker::endVisit(ContractDefinition const& _contract)
 					return;
 
 			m_errorReporter.typeError(
-				77_error,
+				1139_error,
 				baseLocation->location(),
 				"The contract base location must be an expression that can be evaluated at compilation time."
 			);
@@ -267,7 +267,7 @@ void TypeChecker::endVisit(ContractDefinition const& _contract)
 				errorMessage += "must be in range of type uint256. Current type is " + expressionType->humanReadableName();
 
 			m_errorReporter.typeErrorConcatenateDescriptions(
-				76_error,
+				1763_error,
 				baseLocation->location(),
 				errorMessage,
 				result.message()
@@ -282,7 +282,7 @@ void TypeChecker::endVisit(ContractDefinition const& _contract)
 		}
 		else
 			m_errorReporter.typeError(
-				42_error,
+				6396_error,
 				baseLocation->location(),
 				"Only number literals are accepted in the expression specifying the contract base storage location."
 			);
