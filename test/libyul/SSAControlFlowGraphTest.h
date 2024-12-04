@@ -24,7 +24,6 @@
 
 namespace solidity::yul
 {
-struct Dialect;
 
 namespace test
 {
@@ -35,8 +34,6 @@ public:
 	static std::unique_ptr<TestCase> create(Config const& _config);
 	explicit SSAControlFlowGraphTest(std::string const& _filename);
 	TestResult run(std::ostream& _stream, std::string const& _linePrefix = "", bool const _formatted = false) override;
-private:
-	Dialect const* m_dialect = nullptr;
 };
 }
 }

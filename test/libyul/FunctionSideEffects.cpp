@@ -20,12 +20,11 @@
 #include <test/Common.h>
 #include <test/libyul/Common.h>
 
-#include <libsolutil/AnsiColorized.h>
-
 #include <libyul/SideEffects.h>
 #include <libyul/optimiser/CallGraphGenerator.h>
 #include <libyul/optimiser/Semantics.h>
 #include <libyul/Object.h>
+#include <libyul/YulStack.h>
 #include <libyul/backends/evm/EVMDialect.h>
 
 #include <libsolutil/StringUtils.h>
@@ -82,19 +81,18 @@ FunctionSideEffects::FunctionSideEffects(std::string const& _filename):
 
 TestCase::TestResult FunctionSideEffects::run(std::ostream& _stream, std::string const& _linePrefix, bool _formatted)
 {
-	auto const& dialect = EVMDialect::strictAssemblyForEVMObjects(
-		solidity::test::CommonOptions::get().evmVersion(),
-		solidity::test::CommonOptions::get().eofVersion()
-	);
-	Object obj;
-	auto parsingResult = yul::test::parse(m_source);
-	obj.setCode(parsingResult.first, parsingResult.second);
-	if (!obj.hasCode())
-		BOOST_THROW_EXCEPTION(std::runtime_error("Parsing input failed."));
+	YulStack yulStack = parseYul(m_source);
+	solUnimplementedAssert(yulStack.parserResult()->subObjects.empty(), "Tests with subobjects not supported.");
+
+	if (yulStack.hasErrors())
+	{
+		printYulErrors(yulStack, _stream, _linePrefix, _formatted);
+		return TestResult::FatalError;
+	}
 
 	std::map<YulName, SideEffects> functionSideEffects = SideEffectsPropagator::sideEffects(
-		dialect,
-		CallGraphGenerator::callGraph(obj.code()->root())
+		*yulStack.parserResult()->dialect(),
+		CallGraphGenerator::callGraph(yulStack.parserResult()->code()->root())
 	);
 
 	std::map<std::string, std::string> functionSideEffectsStr;
